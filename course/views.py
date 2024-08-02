@@ -5,7 +5,10 @@ from .models import Courses, Trainer
 
 
 def course(request):
-    courses = Courses.objects.filter(status=True)
+    if request.GET.get("catname"):
+        courses = Courses.objects.filter(category__name=request.GET.get("catname"))
+    else:
+        courses = Courses.objects.filter(status=True)
     context = {
         "courses" : courses
     }

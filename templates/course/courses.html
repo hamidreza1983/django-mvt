@@ -31,7 +31,10 @@
     <section id="courses" class="courses section">
 
       <div class="container">
-
+        <form>
+          <input type="text" name="search">
+          <button type="submit" class="btn_primary">search</button>
+        </form>
         <div class="row">
             {% for course in courses %}
           <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
