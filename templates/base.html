@@ -50,12 +50,12 @@
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="index.html" class="active">Home<br></a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="courses.html">Courses</a></li>
-          <li><a href="trainers.html">Trainers</a></li>
-          <li><a href="events.html">Events</a></li>
-          <li><a href="contact.html">Contact</a></li>
+          <li><a href={% url "root:home" %} class="active">Home<br></a></li>
+          <li><a href={% url "root:about" %}>About</a></li>
+          <li><a href={% url "course:courses" %}>Courses</a></li>
+          <li><a href={% url "course:trainers" %}>Trainers</a></li>
+          <li><a href={% url "root:events" %}>Events</a></li>
+          <li><a href={% url "root:contact" %}>Contact</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>

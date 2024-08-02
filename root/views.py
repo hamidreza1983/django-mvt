@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Serivces
+from .models import Serivces, Events
 
 
 
@@ -13,3 +13,10 @@ def contact(request):
 
 def about(request):
     return render(request, 'root/about.html')
+
+def events(request):
+    event = Events.objects.all()
+    context = {
+        "events": event
+    }
+    return render(request, 'root/events.html', context = context)
