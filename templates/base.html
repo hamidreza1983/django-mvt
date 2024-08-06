@@ -59,7 +59,8 @@
           <li class="dropdown"><a href="#"><span>Category</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
               {% for cat in category %}
-              <li><a href={% url "course:courses" %}?catname={{cat.name}}>{{cat.name}}</a></li>
+              {% comment "" %}<li><a href={% url "course:courses" %}?catname={{cat.name}}>{{cat.name}}</a></li>{% endcomment %}
+              <li><a href={% url "course:courses_category" catname=cat.name %}>{{cat.name}}</a></li>
               {% endfor %}
             </ul>
           </li>

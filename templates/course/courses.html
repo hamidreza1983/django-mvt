@@ -45,15 +45,15 @@
                   {% for cat in course.category.all %}
                   <p class="category">{{cat.name}}</p>
                   {% endfor %}
-                  <p class="price">{{course.fee}}</p>
+                  <a href= {% url "course:course_price" pr=course.fee %}>{{course.fee}}</a>
                 </div>
 
-                <h3><a href="course-details.html">{{course.name}}</a></h3>
+                <h3><a href={% url "course:course_detail" id=course.id %}>{{course.name}}</a></h3>
                 <p class="description">{{course.content}}</p>
                 <div class="trainer d-flex justify-content-between align-items-center">
                   <div class="trainer-profile d-flex align-items-center">
                     <img src={{course.trainer.image.url}} class="img-fluid" alt="">
-                    <a href="" class="trainer-link">{{course.trainer.user.username}}</a>
+                    <a href={% url "course:courses_trainer" tr=course.trainer.user.username %} class="trainer-link">{{course.trainer.user.username}}</a>
                   </div>
                   <div class="trainer-rank d-flex align-items-center">
                     <i class="bi bi-person user-icon"></i>&nbsp;{{course.capacity}}
