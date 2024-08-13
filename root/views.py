@@ -1,22 +1,36 @@
 from django.shortcuts import render
-from .models import Serivces, Events
+from .models import Serivces, Events, NewsLetter
 from course.models import Courses, Trainer
+from .forms import NewsLetterForm
 
 
 
 
 def home(request):
-    #services = Serivces.objects.all()
-    print (request.GET)
-    last_three_courses = Courses.objects.filter(status=True)[:3]
-    last_three_trainers = Trainer.objects.filter(status=True)[:3]
-    services = Serivces.objects.filter(status=True)
-    context={
-        "services": services,
-        "ltc":last_three_courses,
-        "ltt":last_three_trainers,
-    }
-    return render(request, 'root/index.html', context = context )
+    if request.method == "GET":
+        last_three_courses = Courses.objects.filter(status=True)[:3]
+        last_three_trainers = Trainer.objects.filter(status=True)[:3]
+        services = Serivces.objects.filter(status=True)
+        context={
+            "services": services,
+            "ltc":last_three_courses,
+            "ltt":last_three_trainers,
+        }
+        return render(request, 'root/index.html', context = context )
+    elif request.method == "POST":
+        form = NewsLetterForm(request.POST)
+        if form.is_valid():
+            obj = NewsLetter()
+            obj.email = form.cleaned_data["email"]
+            obj.save()
+            context={
+            "services": services,
+            "ltc":last_three_courses,
+            "ltt":last_three_trainers,
+        }
+            return render(request, 'root/index.html', context = context )
+
+
 
 def contact(request):
     return render(request, 'root/contact.html')

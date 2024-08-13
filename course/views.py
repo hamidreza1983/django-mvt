@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Courses, Trainer
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 # Create your views here.
 
@@ -15,8 +16,20 @@ def course(request, **kwargs):
         courses = Courses.objects.filter(fee__lte=float(kwargs.get('pr')))
     else:
         courses = Courses.objects.filter(status=True)
+
+    courses = Paginator(courses, 1)
+
+    try:
+        page_number = request.GET.get('page')
+        courses = courses.get_page(page_number)
+    except EmptyPage:
+        courses = courses.get_page(1)
+    except PageNotAnInteger:
+        courses = courses.get_page(1)
+
     context = {
-        "courses" : courses
+        "courses" : courses,
+         "page_number" : page_number
     }
     return render(request, 'course/courses.html', context=context)
 
@@ -24,7 +37,8 @@ def course(request, **kwargs):
 def course_detail(request, id):
     course = get_object_or_404(Courses, id=id)
     context = {
-        "course" : course
+        "course" : course,
+       
     }
     return render(request, 'course/course-details.html', context=context)
 
