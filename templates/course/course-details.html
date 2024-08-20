@@ -148,14 +148,24 @@
               </div>
             </div>
             <form method="post">
-              <p>Your email--------:-<input type="email" name="email"></p>
+              {% csrf_token %}
+              <input type="hidden" name="course" value={{course.id}}>
+              <p>Your username-----:-<input type="text" name="name"></p>
               <p>Your comment--:-<input type="text" name="message"></p>
               <button type="submit">submit comment</button>
             </form>
+            {% if messages %}
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+            {% endif %}
           </div>
 
         </div>
-
+          {% for comment in comments %}
+          <p>{{ comment.name }}</p>
+          <p style="color:red;"><a href={% url "course:edit-comment" id=comment.id %}>{{ comment.message }}</a></p>
+          {% endfor %}
 
       </div>
 

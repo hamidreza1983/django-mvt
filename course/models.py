@@ -62,3 +62,13 @@ class Courses(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Comments(models.Model):
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    name = models.CharField(max_length=150)
+    message = models.TextField()
+    status = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
