@@ -1,0 +1,13 @@
+<form method='post'>
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type='submit'>Login</button>
+</form>
+<p style="color:blue;"><a href="#">sigunup your accounts</a></p>
+<p style="color:red;"><a href="#">forgot your password</a></p>
+
+{% if messages %}
+{% for message in messages %}
+{{message}}
+{% endfor %}
+{% endif %}
