@@ -47,14 +47,17 @@ def course_detail(request, id):
         }
         return render(request, 'course/course-details.html', context=context)
     elif request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.add_message(request, messages.SUCCESS, "valid data")
-            return redirect (request.path_info)
+        if request.user.is_authenticated:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.add_message(request, messages.SUCCESS, "valid data")
+                return redirect (request.path_info)
+            else:
+                messages.add_message(request, messages.ERROR, "Invalid data")
+                return redirect (request.path_info)
         else:
-            messages.add_message(request, messages.ERROR, "Invalid data")
-            return redirect (request.path_info)
+            return redirect ("accounts:login")
 
 def trainer(request):
     trainers = Trainer.objects.filter(status=True)

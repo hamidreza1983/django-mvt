@@ -3,7 +3,7 @@
     {{form.as_p}}
     <button type='submit'>Login</button>
 </form>
-<p style="color:blue;"><a href="#">sigunup your accounts</a></p>
+<p style="color:blue;"><a href={% url "accounts:signup" %}>sigunup your accounts</a></p>
 <p style="color:red;"><a href="#">forgot your password</a></p>
 
 {% if messages %}

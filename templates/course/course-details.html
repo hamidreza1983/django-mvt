@@ -147,13 +147,15 @@
                 </div>
               </div>
             </div>
+
             <form method="post">
               {% csrf_token %}
               <input type="hidden" name="course" value={{course.id}}>
-              <p>Your username-----:-<input type="text" name="name"></p>
+              <input type="hidden" name="name" value={{request.user.id}}>
               <p>Your comment--:-<input type="text" name="message"></p>
               <button type="submit">submit comment</button>
             </form>
+
             {% if messages %}
             {% for message in messages %}
             {{ message }}
