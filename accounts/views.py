@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
-from .forms import LoginForm
+from .forms import *
 from django.contrib.auth import authenticate, login, logout, password_validation
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import RegistrationForm, ChangePassword
+from django.core.mail import send_mail
+from uuid import uuid4
+from .models import PersonalToken
 
 
 
@@ -89,18 +91,57 @@ def password_change(request):
 
 
 def password_reset(request):
-    pass
-
+    if request.method == "GET":
+        form = PasswordResetForm()
+        context = {
+            "form" : form
+        }
+        return render(request, "registration/reset_password.html", context=context)
+    else:
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            user = get_object_or_404(User, email=form.cleaned_data["email"])
+            try:
+                token = PersonalToken.objects.get(user=user)
+            except:
+                token = PersonalToken.objects.create(user=user, token=str(uuid4()))
+            send_mail(
+                "reset password",
+                f"http://127.0.0.1:8000/accounts/password_reset_confirm/{token.token}",
+                "admin",
+                [user.email],
+                fail_silently=True
+            )
+            return redirect("accounts:password_reset_done")
+        else:
+            messages.add_message(request, messages.ERROR, "please inser correct data")
+            return redirect(request.path_info)
+        
 def password_reset_done(request):
-    pass
+    return render(request, "registration/password_reset_done.html")
 
-
-def password_reset_confirm(request):
-    pass
+def password_reset_confirm(request, token):
+    if request.method == "GET":
+        form = PasswordResetConfirmForm()
+        context = {
+            "form" : form,
+        }
+        return render (request, "registration/password_reset_confirm.html", context=context)
+    else:
+        user = PersonalToken.objects.get(token=token).user
+        pass1 = request.POST.get('pass1')
+        pass2 = request.POST.get('pass2')
+        if pass1 != pass2 :
+            messages.add_message(request, messages.ERROR, "pass1 and pass2 must be the same")
+            return redirect(request.path_info)
+        try : 
+            password_validation.validate_password(pass1)
+            user.set_password(pass1)
+            user.save()
+            return redirect("accounts:password_reset_complete")
+        except:
+            messages.add_message(request, messages.ERROR, "password validation fail")
+            return redirect(request.path_info)
 
 def password_reset_complete(request):
-    pass
-
-
-
-# Create your views here.
+    return render (request, "registration/password_reset_complete.html")
