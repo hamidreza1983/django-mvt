@@ -1,6 +1,8 @@
 from root.models import Events
 from course.models import *
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
 
 
 

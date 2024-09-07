@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
-from .forms import *
+#from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from .forms import (
+    LoginForm, RegistrationForm, PasswordResetConfirmForm,
+    ChangePassword, EditProfileForm, PasswordResetForm, 
+)
 from django.contrib.auth import authenticate, login, logout, password_validation
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -8,7 +12,7 @@ from django.core.mail import send_mail
 from uuid import uuid4
 from .models import PersonalToken
 
-
+User = get_user_model()
 
 def login_view(request):
     if request.method == 'GET':
@@ -20,15 +24,25 @@ def login_view(request):
     elif request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
+            username_or_email = form.cleaned_data['username_or_email']
             password = form.cleaned_data['password']
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect("/")
+            if "@" in username_or_email:
+                username = User.objects.get(email=username_or_email).username
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    login(request, user)
+                    return redirect("/")
+                else:
+                    messages.add_message(request, messages.ERROR, "Login failed please check you input data and try again ")
+                    return redirect(request.path_info)
             else:
-                messages.add_message(request, messages.ERROR, "Login failed please check you input data and try again ")
-                return redirect(request.path_info)
+                user = authenticate(username=username_or_email, password=password)
+                if user is not None:
+                    login(request, user)
+                    return redirect("/")
+                else:
+                    messages.add_message(request, messages.ERROR, "Login failed please check you input data and try again ")
+                    return redirect(request.path_info)
         else:
             messages.add_message(request, messages.ERROR, "Login failed please check you input data and try again ")
             return redirect(request.path_info)
@@ -145,3 +159,20 @@ def password_reset_confirm(request, token):
 
 def password_reset_complete(request):
     return render (request, "registration/password_reset_complete.html")
+
+def edit_profile(request, id):
+    user = User.objects.get(id=id)
+    if request.method == "GET":
+        form = EditProfileForm(instance=user)
+        context = {
+            "form" : form
+        }
+        return render (request,"registration/edit-profile.html", context=context)
+    else:
+        form = EditProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect("/")
+        else:
+            messages.add_message(request, messages.ERROR, "invalid data input")
+            return redirect(request.path_info)

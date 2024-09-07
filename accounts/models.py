@@ -1,8 +1,19 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
+
+
+
+class CustomUserModel(AbstractUser):
+    id_code = models.CharField(max_length=10, unique=True)
+    mobile = models.CharField(max_length=11, unique=True)
+    address = models.CharField(max_length=220)
+    birthday = models.DateTimeField(default=timezone.now)
+
+
 
 class PersonalToken(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUserModel, on_delete=models.CASCADE)
     token = models.CharField(max_length=255)
 
     def __str__(self):

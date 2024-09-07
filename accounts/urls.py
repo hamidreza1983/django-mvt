@@ -1,5 +1,9 @@
 from django.urls import path
-from .views import *
+from .views import (
+    login_view, logout_view, signup, password_change,
+    password_reset, password_reset_complete, password_reset_confirm,
+    password_reset_done, edit_profile
+)
 
 
 app_name="accounts"
@@ -13,4 +17,5 @@ urlpatterns = [
     path('password_reset_done', password_reset_done, name="password_reset_done"),
     path('password_reset_confirm/<str:token>', password_reset_confirm, name="password_reset_confirm"),
     path('password_reset_complete', password_reset_complete, name="password_reset_complete"),
+    path('edit-profile/<int:id>', edit_profile, name="edit-profile"),
 ]

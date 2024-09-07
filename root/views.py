@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Serivces, Events, NewsLetter
+from .models import Serivces, Events
 from course.models import Courses, Trainer
 from .forms import NewsLetterForm, ContactUsForm
 from django.contrib import messages
