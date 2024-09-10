@@ -2,6 +2,7 @@
 {% load static %}
 {% block 'title' %}detail{% endblock 'title' %}
 {% block 'content' %}
+{% load humanize %}
 
   <main class="main">
 
@@ -54,12 +55,12 @@
 
             <div class="course-info d-flex justify-content-between align-items-center">
               <h5>Available Seats</h5>
-              <p>{{course.capacity}}</p>
+              <p>{{course.capacity|apnumber}}</p>
             </div>
 
             <div class="course-info d-flex justify-content-between align-items-center">
               <h5>Schedule</h5>
-              <p>{{course.schedule|date:"d F Y"}}</p>
+              <p>{{course.schedule|naturaltime}}</p>
             </div>
 
           </div>

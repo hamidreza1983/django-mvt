@@ -5,6 +5,7 @@ from django.utils import timezone
 
 
 class CustomUserModel(AbstractUser):
+    image = models.ImageField(upload_to="user", default="user-image.png")
     id_code = models.CharField(max_length=10, unique=True)
     mobile = models.CharField(max_length=11, unique=True)
     address = models.CharField(max_length=220)

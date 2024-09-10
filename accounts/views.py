@@ -11,6 +11,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from uuid import uuid4
 from .models import PersonalToken
+from threading import Thread
+
 
 User = get_user_model()
 
@@ -99,11 +101,6 @@ def password_change(request):
             return redirect(request.path_info)
 
 
-
-        
-
-
-
 def password_reset(request):
     if request.method == "GET":
         form = PasswordResetForm()
@@ -119,11 +116,16 @@ def password_reset(request):
                 token = PersonalToken.objects.get(user=user)
             except:
                 token = PersonalToken.objects.create(user=user, token=str(uuid4()))
+            subject = "reset password",
+            message = f"http://127.0.0.1:8000/accounts/password_reset_confirm/{token.token}",
+            sender = "admin",
+            receiver = [user.email],
+            fail_silently=True
             send_mail(
-                "reset password",
-                f"http://127.0.0.1:8000/accounts/password_reset_confirm/{token.token}",
-                "admin",
-                [user.email],
+                subject=subject,
+                message=message,
+                from_email=sender,
+                recipient_list=receiver,
                 fail_silently=True
             )
             return redirect("accounts:password_reset_done")
@@ -169,7 +171,7 @@ def edit_profile(request, id):
         }
         return render (request,"registration/edit-profile.html", context=context)
     else:
-        form = EditProfileForm(request.POST, instance=user)
+        form = EditProfileForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
             return redirect("/")
