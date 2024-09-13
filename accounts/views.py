@@ -118,6 +118,7 @@ def password_reset(request):
                 token = PersonalToken.objects.create(user=user, token=str(uuid4()))
             subject = "reset password",
             message = f"http://127.0.0.1:8000/accounts/password_reset_confirm/{token.token}",
+            #message = f"http://learningpy.ir/accounts/password_reset_confirm/{token.token}",
             sender = "admin",
             receiver = [user.email],
             fail_silently=True
